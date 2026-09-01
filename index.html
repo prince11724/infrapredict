@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>InfraPredict AI | Infrastructure Monitoring</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="styles.css">
+
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div id="toast" class="toast"></div>
+
+
+<!-- =====================================================
+     LANDING
+===================================================== -->
+
+<section id="landing"
+         class="screen landing-screen">
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                IP
+            </div>
+
+            <div>
+                <h1>InfraPredict AI</h1>
+                <span>Infrastructure Monitoring & Analytics</span>
+            </div>
+
+        </div>
+
+        <div class="gov-badge">
+            <strong>MoSPI</strong>
+            <small>AI for Infrastructure Monitoring</small>
+        </div>
+
+    </header>
+
+
+    <main class="landing-content">
+
+        <div class="hero-copy">
+
+            <span class="eyebrow">
+                PROJECT ASSESSMENT • MONITORING • ANALYTICS
+            </span>
+
+            <h2>
+                Predict problems
+                <span>before they happen.</span>
+            </h2>
+
+            <p>
+                AI-powered project intelligence for cost overruns,
+                schedule delays, implementation risks and early intervention.
+            </p>
+
+        </div>
+
+
+        <div class="role-grid">
+
+            <button class="role-card"
+                    onclick="openLogin('contractor')">
+
+                <div class="role-icon contractor">
+                    🏗
+                </div>
+
+                <div>
+                    <h3>Contractor</h3>
+
+                    <p>
+                        Update project progress, milestones,
+                        expenditure and site issues.
+                    </p>
+                </div>
+
+                <span class="arrow">→</span>
+
+            </button>
+
+
+            <button class="role-card"
+                    onclick="openLogin('supervisor')">
+
+                <div class="role-icon supervisor">
+                    ✓
+                </div>
+
+                <div>
+                    <h3>Supervisor</h3>
+
+                    <p>
+                        Inspect project health, verify updates
+                        and raise early warnings.
+                    </p>
+                </div>
+
+                <span class="arrow">→</span>
+
+            </button>
+
+
+            <button class="role-card"
+                    onclick="openLogin('government')">
+
+                <div class="role-icon government">
+                    🏛
+                </div>
+
+                <div>
+                    <h3>Government / MoSPI</h3>
+
+                    <p>
+                        Monitor the portfolio, analyze risk
+                        and prioritize interventions.
+                    </p>
+                </div>
+
+                <span class="arrow">→</span>
+
+            </button>
+
+        </div>
+
+
+        <div class="landing-stats">
+
+            <div>
+                <strong>1,981</strong>
+                <span>Ongoing Projects</span>
+            </div>
+
+            <div>
+                <strong>17</strong>
+                <span>Central Ministries</span>
+            </div>
+
+            <div>
+                <strong>22</strong>
+                <span>Infrastructure Sectors</span>
+            </div>
+
+            <div>
+                <strong>AI</strong>
+                <span>Predictive Monitoring</span>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <span>
+            Prototype for AI-powered infrastructure project monitoring
+        </span>
+
+        <span>
+            © 2026 InfraPredict AI
+        </span>
+
+    </footer>
+
+</section>
+
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<section id="login"
+         class="screen login-screen hidden">
+
+    <div class="login-shell">
+
+
+        <div class="login-visual">
+
+            <button class="back-button"
+                    onclick="showLanding()">
+
+                ← Back
+
+            </button>
+
+
+            <div class="visual-content">
+
+                <div class="brand large">
+
+                    <div class="brand-mark">
+                        IP
+                    </div>
+
+                    <div>
+
+                        <h1>InfraPredict AI</h1>
+
+                        <span>
+                            Infrastructure Project Intelligence
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <h2 id="loginTitle">
+                    Government / MoSPI Login
+                </h2>
+
+                <p id="loginDescription">
+                    Monitor the complete infrastructure portfolio.
+                </p>
+
+
+                <div class="secure-note">
+                    🔒 Unique ID based secure access
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="login-panel">
+
+
+            <div class="mobile-brand">
+
+                <div class="brand-mark">
+                    IP
+                </div>
+
+                <strong>
+                    InfraPredict AI
+                </strong>
+
+            </div>
+
+
+            <div class="login-heading">
+
+                <span id="loginRoleLabel"
+                      class="mini-label">
+
+                    GOVERNMENT / MOSPI PORTAL
+
+                </span>
+
+                <h2>
+                    Welcome back
+                </h2>
+
+                <p>
+                    Sign in to continue to your monitoring dashboard.
+                </p>
+
+            </div>
+
+
+            <form id="loginForm"
+                  onsubmit="handleLogin(event)">
+
+
+                <label>
+
+                    Unique User ID
+
+                    <input id="username"
+                           type="text"
+                           placeholder="Enter your unique ID"
+                           autocomplete="username"
+                           required>
+
+                </label>
+
+
+                <label>
+
+                    Password
+
+                    <div class="password-wrap">
+
+                        <input id="password"
+                               type="password"
+                               placeholder="Enter password"
+                               autocomplete="current-password"
+                               required>
+
+                        <button type="button"
+                                onclick="togglePassword()"
+                                class="show-pass">
+
+                            Show
+
+                        </button>
+
+                    </div>
+
+                </label>
+
+
+                <div class="form-row">
+
+                    <label class="check">
+
+                        <input type="checkbox">
+
+                        Remember me
+
+                    </label>
+
+                    <a href="#"
+                       onclick="forgotPassword(event)">
+
+                        Forgot password?
+
+                    </a>
+
+                </div>
+
+
+                <button class="primary-btn"
+                        type="submit">
+
+                    Sign In
+                    <span>→</span>
+
+                </button>
+
+            </form>
+
+
+            <div id="loginStatus"
+                 class="login-status">
+
+            </div>
+
+
+            <div class="demo-note">
+
+                <strong>Demo credentials:</strong>
+
+                <br>
+
+                Government:
+                <b>GOV001</b> /
+                <b>GOV@123</b>
+
+                <br>
+
+                Supervisor:
+                <b>SUP001</b> /
+                <b>SUP@123</b>
+
+                <br>
+
+                Contractor:
+                <b>CON001</b> /
+                <b>CON@123</b>
+
+            </div>
+
+
+            <div class="switch-role">
+
+                <span>
+                    Sign in as another role?
+                </span>
+
+                <button onclick="showLanding()">
+                    Choose role
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section id="dashboard"
+         class="screen dashboard-screen hidden">
+
+
+    <!-- MOBILE HEADER -->
+
+    <div class="mobile-dashboard-header">
+
+        <button onclick="toggleSidebar()"
+                class="hamburger">
+
+            ☰
+
+        </button>
+
+        <strong>
+            InfraPredict AI
+        </strong>
+
+    </div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside id="sidebar"
+           class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <div class="brand-mark">
+                IP
+            </div>
+
+            <div>
+
+                <strong>
+                    InfraPredict
+                </strong>
+
+                <small>
+                    AI Monitoring
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="role-chip"
+             id="sideRole">
+
+            Government / MoSPI
+
+        </div>
+
+
+        <!-- PORTAL ACCESS -->
+
+        <div class="portal-section">
+
+            <div class="portal-title">
+                PORTAL ACCESS
+            </div>
+
+            <div id="portalAccess">
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav>
+
+            <button class="nav-item active"
+                    onclick="navigate('overview', this)">
+
+                ◈
+                <span>Overview</span>
+
+            </button>
+
+
+            <button class="nav-item"
+                    onclick="navigate('projects', this)">
+
+                ▦
+                <span>Projects</span>
+
+            </button>
+
+
+            <button class="nav-item"
+                    onclick="navigate('risk', this)">
+
+                ⚠
+                <span>Risk & Alerts</span>
+
+                <span class="nav-count">
+                    7
+                </span>
+
+            </button>
+
+
+            <button class="nav-item"
+                    onclick="navigate('analytics', this)">
+
+                ◒
+                <span>Analytics</span>
+
+            </button>
+
+
+            <button class="nav-item"
+                    onclick="navigate('milestones', this)">
+
+                ✓
+                <span>Milestones</span>
+
+            </button>
+
+
+            <button class="nav-item"
+                    onclick="navigate('reports', this)">
+
+                ▤
+                <span>Reports</span>
+
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button class="nav-item"
+                    onclick="showToast('Settings are ready for backend integration.')">
+
+                ⚙
+                <span>Settings</span>
+
+            </button>
+
+
+            <button class="logout-btn"
+                    onclick="logout()">
+
+                ↪
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <div class="breadcrumb">
+
+                    Home /
+                    <span id="pageName">
+                        Overview
+                    </span>
+
+                </div>
+
+                <h1 id="dashboardTitle">
+                    Infrastructure Overview
+                </h1>
+
+                <p id="dashboardSubtitle">
+                    AI-powered monitoring of national infrastructure projects
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button class="icon-btn"
+                        onclick="showToast('No new notifications.')">
+
+                    🔔
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="avatar"
+                         id="avatar">
+
+                        G
+
+                    </div>
+
+                    <div>
+
+                        <strong id="profileName">
+                            Government User
+                        </strong>
+
+                        <small id="profileRole">
+                            Government / MoSPI
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             OVERVIEW
+        ================================================= -->
+
+        <div id="page-overview"
+             class="page">
+
+
+            <!-- HERO CARD -->
+
+            <section class="hero-card">
+
+                <div>
+
+                    <span class="eyebrow">
+                        AI PROJECT INTELLIGENCE
+                    </span>
+
+                    <h2 id="heroTitle">
+                        National Infrastructure Portfolio
+                    </h2>
+
+                    <p id="heroDescription">
+                        Monitor projects, identify risks and take action
+                        before delays become critical.
+                    </p>
+
+                </div>
+
+                <div class="hero-badge">
+
+                    <span>
+                        ●
+                    </span>
+
+                    AI Monitoring Active
+
+                </div>
+
+            </section>
+
+
+            <!-- KPI -->
+
+            <section class="kpi-grid">
+
+
+                <button class="kpi-card"
+                        onclick="openKPI('all')">
+
+                    <div class="kpi-top">
+
+                        <span>
+                            Total Projects
+                        </span>
+
+                        <span class="kpi-icon blue">
+                            ▦
+                        </span>
+
+                    </div>
+
+                    <strong id="kpiTotal">
+                        1,981
+                    </strong>
+
+                    <small>
+                        <b class="up">
+                            ↑ 4.8%
+                        </b>
+                        vs last month
+                    </small>
+
+                </button>
+
+
+                <button class="kpi-card"
+                        onclick="openKPI('high-risk')">
+
+                    <div class="kpi-top">
+
+                        <span>
+                            High Risk Projects
+                        </span>
+
+                        <span class="kpi-icon red">
+                            ⚠
+                        </span>
+
+                    </div>
+
+                    <strong id="kpiHighRisk">
+                        127
+                    </strong>
+
+                    <small>
+                        <b class="down">
+                            ↓ 6.2%
+                        </b>
+                        after interventions
+                    </small>
+
+                </button>
+
+
+                <button class="kpi-card"
+                        onclick="openKPI('risk')">
+
+                    <div class="kpi-top">
+
+                        <span>
+                            Avg. Risk Score
+                        </span>
+
+                        <span class="kpi-icon orange">
+                            ◉
+                        </span>
+
+                    </div>
+
+                    <strong id="kpiRisk">
+                        42.6<span class="unit">/100</span>
+                    </strong>
+
+                    <small>
+                        <b class="down">
+                            ↓ 2.1%
+                        </b>
+                        portfolio risk
+                    </small>
+
+                </button>
+
+
+                <button class="kpi-card"
+                        onclick="openKPI('on-track')">
+
+                    <div class="kpi-top">
+
+                        <span>
+                            Projects On Track
+                        </span>
+
+                        <span class="kpi-icon green">
+                            ✓
+                        </span>
+
+                    </div>
+
+                    <strong id="kpiOnTrack">
+                        76.4%
+                    </strong>
+
+                    <small>
+                        <b class="up">
+                            ↑ 3.7%
+                        </b>
+                        this quarter
+                    </small>
+
+                </button>
+
+            </section>
+
+
+            <!-- CHARTS -->
+
+            <section class="content-grid">
+
+
+                <!-- RISK GRAPH -->
+
+                <div class="panel chart-panel large-panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                Project Risk Trend
+                            </h3>
+
+                            <p>
+                                Average predicted risk score over the last 12 months
+                            </p>
+
+                        </div>
+
+
+                        <select onchange="updateRiskChart(this.value)">
+
+                            <option value="risk">
+                                Risk Score
+                            </option>
+
+                            <option value="delay">
+                                Delay Probability
+                            </option>
+
+                            <option value="cost">
+                                Cost Overrun Probability
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="chart-wrap">
+
+                        <canvas id="riskChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CIRCULAR CHART -->
+
+                <div class="panel sector-panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                Sector Distribution
+                            </h3>
+
+                            <p>
+                                Current monitored portfolio
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="donut-wrap">
+
+                        <canvas id="sectorChart"></canvas>
+
+                    </div>
+
+
+                    <div class="legend">
+
+                        <span>
+                            <i></i>
+                            Transport & Logistics
+                            <b>31%</b>
+                        </span>
+
+                        <span>
+                            <i></i>
+                            Energy
+                            <b>24%</b>
+                        </span>
+
+                        <span>
+                            <i></i>
+                            Water & Sanitation
+                            <b>16%</b>
+                        </span>
+
+                        <span>
+                            <i></i>
+                            Social Infrastructure
+                            <b>12%</b>
+                        </span>
+
+                        <span>
+                            <i></i>
+                            Other sectors
+                            <b>17%</b>
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TABLE + ALERTS -->
+
+            <section class="content-grid bottom-grid">
+
+
+                <div class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                High-Priority Projects
+                            </h3>
+
+                            <p>
+                                Projects requiring attention based on AI risk scoring
+                            </p>
+
+                        </div>
+
+                        <button class="text-btn"
+                                onclick="navigateToProjects()">
+
+                            View all →
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Project</th>
+                                    <th>Sector</th>
+                                    <th>Risk</th>
+                                    <th>Cost Variance</th>
+                                    <th>Delay</th>
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="priorityTable">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel alerts-panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                Early Warnings
+                            </h3>
+
+                            <p>
+                                AI-generated signals
+                            </p>
+
+                        </div>
+
+                        <span class="alert-count">
+                            7 new
+                        </span>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <span class="alert-dot red"></span>
+
+                        <div>
+
+                            <b>
+                                Cost escalation detected
+                            </b>
+
+                            <small>
+                                National Highway Package-42 · 18 min ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <span class="alert-dot orange"></span>
+
+                        <div>
+
+                            <b>
+                                Milestone delay predicted
+                            </b>
+
+                            <small>
+                                Eastern Grid Expansion · 42 min ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <span class="alert-dot yellow"></span>
+
+                        <div>
+
+                            <b>
+                                Low expenditure velocity
+                            </b>
+
+                            <small>
+                                River Basin Water Project · 1 hr ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <span class="alert-dot blue"></span>
+
+                        <div>
+
+                            <b>
+                                Monthly update received
+                            </b>
+
+                            <small>
+                                Metro Corridor Phase III · 2 hrs ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- =================================================
+             PROJECTS
+        ================================================= -->
+
+        <div id="page-projects"
+             class="page hidden">
+
+            <div class="panel page-panel">
+
+                <div class="page-toolbar">
+
+                    <div>
+
+                        <h2>
+                            Project Portfolio
+                        </h2>
+
+                        <p>
+                            Search and monitor infrastructure projects.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div id="projectFilterBanner"
+                     class="project-filter-banner hidden">
+
+                </div>
+
+
+                <div class="filters">
+
+                    <input type="text"
+                           id="projectSearch"
+                           placeholder="🔎 Search project..."
+                           oninput="filterProjects()">
+
+
+                    <select id="sectorFilter"
+                            onchange="filterProjects()">
+
+                        <option value="all">
+                            All Sectors
+                        </option>
+
+                        <option value="Transport">
+                            Transport
+                        </option>
+
+                        <option value="Energy">
+                            Energy
+                        </option>
+
+                        <option value="Water">
+                            Water
+                        </option>
+
+                    </select>
+
+
+                    <select id="riskFilter"
+                            onchange="filterProjects()">
+
+                        <option value="all">
+                            All Risk Levels
+                        </option>
+
+                        <option value="High">
+                            High Risk
+                        </option>
+
+                        <option value="Medium">
+                            Medium Risk
+                        </option>
+
+                        <option value="Low">
+                            Low Risk
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table id="projectTable">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Project ID</th>
+                                <th>Project Name</th>
+                                <th>Ministry / Agency</th>
+                                <th>Original Cost</th>
+                                <th>Progress</th>
+                                <th>Risk</th>
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             RISK
+        ================================================= -->
+
+        <div id="page-risk"
+             class="page hidden">
+
+            <section class="risk-banner">
+
+                <div>
+
+                    <span class="eyebrow">
+                        AI EARLY WARNING ENGINE
+                    </span>
+
+                    <h2>
+                        Projects requiring attention
+                    </h2>
+
+                    <p>
+                        AI identifies projects with elevated probability
+                        of cost or schedule overruns.
+                    </p>
+
+                </div>
+
+                <div class="risk-score-big">
+
+                    42.6
+
+                    <small>
+                        Average risk / 100
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <div class="content-grid">
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                Risk Level Distribution
+                            </h3>
+
+                            <p>
+                                AI classification of current projects
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrap">
+
+                        <canvas id="riskDistributionChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>
+                                Recommended Actions
+                            </h3>
+
+                            <p>
+                                Prescriptive insights from the model
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="recommendation">
+
+                        <b>
+                            1. Escalate
+                        </b>
+
+                        <p>
+                            Review high-risk projects within 48 hours.
+                        </p>
+
+                    </div>
+
+
+                    <div class="recommendation">
+
+                        <b>
+                            2. Inspect
+                        </b>
+
+                        <p>
+                            Schedule field verification for elevated-risk projects.
+                        </p>
+
+                    </div>
+
+
+                    <div class="recommendation">
+
+                        <b>
+                            3. Review contract
+                        </b>
+
+                        <p>
+                            Check procurement and vendor bottlenecks.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ANALYTICS
+        ================================================= -->
+
+        <div id="page-analytics"
+             class="page hidden">
+
+            <div class="panel page-panel">
+
+                <div class="page-toolbar">
+
+                    <div>
+
+                        <h2>
+                            Predictive Analytics
+                        </h2>
+
+                        <p>
+                            Model outputs for cost, schedule and implementation risk.
+                        </p>
+
+                    </div>
+
+                    <span class="model-badge">
+                        Model: Gradient Boosting • v1.0
+                    </span>
+
+                </div>
+
+
+                <div class="analytics-grid">
+
+                    <div class="prediction-card">
+
+                        <span>
+                            Predicted Cost Overrun
+                        </span>
+
+                        <strong>
+                            ₹2.84 L Cr
+                        </strong>
+
+                        <small>
+                            Portfolio estimate
+                        </small>
+
+                        <div class="mini-bar">
+                            <span style="width:64%"></span>
+                        </div>
+
+                        <em>
+                            64% projects within expected cost
+                        </em>
+
+                    </div>
+
+
+                    <div class="prediction-card">
+
+                        <span>
+                            Schedule Delay Probability
+                        </span>
+
+                        <strong>
+                            31.8%
+                        </strong>
+
+                        <small>
+                            Portfolio average
+                        </small>
+
+                        <div class="mini-bar">
+                            <span style="width:32%"></span>
+                        </div>
+
+                        <em>
+                            ↓ 4.6% from previous quarter
+                        </em>
+
+                    </div>
+
+
+                    <div class="prediction-card">
+
+                        <span>
+                            Implementation Risk
+                        </span>
+
+                        <strong>
+                            42.6/100
+                        </strong>
+
+                        <small>
+                            AI risk index
+                        </small>
+
+                        <div class="mini-bar">
+                            <span style="width:43%"></span>
+                        </div>
+
+                        <em>
+                            Moderate portfolio risk
+                        </em>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-wrap tall">
+
+                    <canvas id="costDelayChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MILESTONES
+        ================================================= -->
+
+        <div id="page-milestones"
+             class="page hidden">
+
+            <div class="panel page-panel">
+
+                <div class="page-toolbar">
+
+                    <div>
+
+                        <h2>
+                            Milestone Monitoring
+                        </h2>
+
+                        <p>
+                            Track planned vs actual implementation milestones.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+                    <div class="timeline-item done">
+
+                        <span></span>
+
+                        <div>
+
+                            <b>
+                                Land acquisition
+                            </b>
+
+                            <small>
+                                Completed · 14 Jan 2026
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item done">
+
+                        <span></span>
+
+                        <div>
+
+                            <b>
+                                Foundation work
+                            </b>
+
+                            <small>
+                                Completed · 28 Mar 2026
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item current">
+
+                        <span></span>
+
+                        <div>
+
+                            <b>
+                                Structural construction
+                            </b>
+
+                            <small>
+                                In progress · AI predicts 72% on-time probability
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <span></span>
+
+                        <div>
+
+                            <b>
+                                Testing & commissioning
+                            </b>
+
+                            <small>
+                                Planned · Dec 2026
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <span></span>
+
+                        <div>
+
+                            <b>
+                                Final handover
+                            </b>
+
+                            <small>
+                                Planned · Feb 2027
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             REPORTS
+        ================================================= -->
+
+        <div id="page-reports"
+             class="page hidden">
+
+            <div class="panel page-panel">
+
+                <div class="page-toolbar">
+
+                    <div>
+
+                        <h2>
+                            Reports & Intelligence
+                        </h2>
+
+                        <p>
+                            Generate decision-support reports.
+                        </p>
+
+                    </div>
+
+                    <button class="primary-small"
+                            onclick="printReport()">
+
+                        Print / Save PDF
+
+                    </button>
+
+                </div>
+
+
+                <div class="report-grid">
+
+
+                    <button class="report-card"
+                            onclick="showToast('Portfolio risk report selected.')">
+
+                        <span>📊</span>
+
+                        <b>
+                            Portfolio Risk Report
+                        </b>
+
+                        <small>
+                            Risk distribution, trends and priority projects
+                        </small>
+
+                    </button>
+
+
+                    <button class="report-card"
+                            onclick="showToast('Cost overrun report selected.')">
+
+                        <span>₹</span>
+
+                        <b>
+                            Cost Overrun Analysis
+                        </b>
+
+                        <small>
+                            Drivers, variance and predicted escalation
+                        </small>
+
+                    </button>
+
+
+                    <button class="report-card"
+                            onclick="showToast('Schedule report selected.')">
+
+                        <span>◷</span>
+
+                        <b>
+                            Schedule Performance
+                        </b>
+
+                        <small>
+                            Milestones, delays and completion forecasts
+                        </small>
+
+                    </button>
+
+
+                    <button class="report-card"
+                            onclick="showToast('AI intervention report selected.')">
+
+                        <span>✦</span>
+
+                        <b>
+                            AI Intervention Brief
+                        </b>
+
+                        <small>
+                            Recommended actions for high-risk projects
+                        </small>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</section>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
