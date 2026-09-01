@@ -711,7 +711,7 @@ async function loadPortalProjects(role) {
 
         const response =
             await fetch(
-                `http://127.0.0.1:5000/api/projects/${role}`
+                `${API_BASE_URL}/role`,
             );
 
 
