@@ -1,7 +1,7 @@
  // =========================================================
 // GLOBAL STATE
 // =========================================================
-
+const API_BASE_URL="https://infrapredict-1.onrender.com
 let currentRole = "government";
 
 let currentUser = null;
