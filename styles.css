@@ -6325,3 +6325,104 @@ select:focus-visible {
     }
 
 }
+/* =========================================
+   FLOATING LANDING PAGE STATS
+   ========================================= */
+
+.landing-screen {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating cards */
+.floating-stat {
+    position: absolute;
+    z-index: 5;
+
+    min-width: 165px;
+    padding: 16px 20px;
+
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(18, 79, 115, 0.12);
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(20, 70, 100, 0.12),
+        0 4px 12px rgba(20, 70, 100, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    animation: floatingStat 4s ease-in-out infinite;
+}
+
+/* Big number */
+.floating-stat .stat-number {
+    font-size: 26px;
+    font-weight: 800;
+    color: #123f5c;
+    line-height: 1.1;
+}
+
+/* Small label */
+.floating-stat .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #71869a;
+    white-space: nowrap;
+}
+
+/* Project card */
+.stat-projects {
+    top: 30%;
+    left: 4%;
+}
+
+/* AI card */
+.stat-ai {
+    top: 52%;
+    right: 4%;
+    animation-delay: 1.2s;
+}
+
+/* Floating animation */
+@keyframes floatingStat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .floating-stat {
+        min-width: 140px;
+        padding: 12px 15px;
+    }
+
+    .floating-stat .stat-number {
+        font-size: 21px;
+    }
+
+    .floating-stat .stat-label {
+        font-size: 10px;
+    }
+
+    .stat-projects {
+        top: 18%;
+        left: 3%;
+    }
+
+    .stat-ai {
+        top: 38%;
+        right: 3%;
+    }
+}
