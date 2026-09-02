@@ -1,7 +1,7 @@
 // =========================================================
 // GLOBAL STATE
 // =========================================================
-const API_BASE_URL = "https://infrapredict-1.onrender.com";
+
 let currentRole = "government";
 
 let currentUser = null;
@@ -218,9 +218,9 @@ async function handleLogin(event) {
     try {
 
         const response =
-    await fetch(
-        `${API_BASE_URL}/api/login`,
-        {
+            await fetch(
+                "http://127.0.0.1:5000/api/login",
+                {
 
                     method: "POST",
 
@@ -709,34 +709,43 @@ async function loadPortalProjects(role) {
 
     try {
 
-        const response = await fetch(
-            `${API_BASE_URL}/api/projects/${encodeURIComponent(role)}`
-        );
+        const response =
+            await fetch(
+                `http://127.0.0.1:5000/api/projects/${role}`
+            );
 
-        const data = await response.json();
 
-        if (!response.ok || !data.success) {
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
 
             showToast(
-                data.message || "Unable to load project data."
+                "Unable to load project data."
             );
 
             return;
         }
 
-        projects = data.projects;
+
+        projects =
+            data.projects;
+
 
         renderProjects();
 
         renderPriorityProjects();
 
+
         updateRoleKPIs();
+
 
     }
 
     catch (error) {
 
-        console.error("PROJECT ERROR:", error);
+        console.error(error);
 
         showToast(
             "Could not connect to project data."
@@ -1484,127 +1493,163 @@ function initCharts() {
 // =========================================================
 // RISK CHART
 // =========================================================
-
 function initRiskChart() {
 
-    const canvas =
-        $("riskChart");
+    const canvas = $("riskChart");
 
-
-    if (!canvas) return;
-
-
-    if (charts.risk) {
-
-        charts.risk.destroy();
-
+    if (!canvas) {
+        console.log("Risk chart canvas not found");
+        return;
     }
 
+    if (charts.risk) {
+        charts.risk.destroy();
+    }
 
-    charts.risk =
-        new Chart(
-            canvas,
-            {
+    const ctx = canvas.getContext("2d");
 
-                type: "line",
+    // Gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
 
-                data: {
+    gradient.addColorStop(
+        0,
+        "rgba(23, 105, 170, 0.30)"
+    );
 
-                    labels: [
+    gradient.addColorStop(
+        0.55,
+        "rgba(23, 105, 170, 0.10)"
+    );
 
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug"
+    gradient.addColorStop(
+        1,
+        "rgba(23, 105, 170, 0.01)"
+    );
 
+
+    charts.risk = new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug"
+            ],
+
+            datasets: [
+
+                {
+                    label: "AI Risk Score",
+
+                    data: [
+                        51,
+                        49,
+                        53,
+                        50,
+                        48,
+                        47,
+                        46,
+                        45,
+                        44,
+                        43,
+                        44,
+                        42.6
                     ],
 
-                    datasets: [{
+                    borderColor: "#1769aa",
 
-                        label:
-                            "Risk Score",
+                    backgroundColor: gradient,
 
-                        data: [
+                    borderWidth: 4,
 
-                            51,
-                            49,
-                            53,
-                            50,
-                            48,
-                            47,
-                            46,
-                            45,
-                            44,
-                            43,
-                            44,
-                            42.6
+                    fill: true,
 
-                        ],
+                    tension: 0.4,
 
-                        borderColor:
-                            "#1769aa",
+                    pointRadius: 6,
 
-                        backgroundColor:
-                            "rgba(23,105,170,.10)",
+                    pointHoverRadius: 9,
 
-                        borderWidth:
-                            3,
+                    pointBackgroundColor: "#ffffff",
 
-                        fill:
-                            true,
+                    pointBorderColor: "#1769aa",
 
-                        tension:
-                            .35,
+                    pointBorderWidth: 4,
 
-                        pointRadius:
-                            4,
+                    pointHoverBackgroundColor: "#1769aa",
 
-                        pointBackgroundColor:
-                            "#1769aa"
+                    pointHoverBorderColor: "#ffffff",
 
-                    }]
+                    pointHoverBorderWidth: 3
+                }
 
+            ]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            animation: {
+                duration: 1500,
+                easing: "easeOutQuart"
+            },
+
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+
+            plugins: {
+
+                legend: {
+                    display: false
                 },
 
-                options: {
+                tooltip: {
 
-                    responsive:
-                        true,
+                    backgroundColor:
+                        "rgba(8, 48, 78, 0.96)",
 
-                    maintainAspectRatio:
-                        false,
+                    titleColor: "#ffffff",
 
-                    plugins: {
+                    bodyColor: "#dceeff",
 
-                        legend: {
-                            display: false
-                        }
+                    padding: 14,
 
-                    },
+                    cornerRadius: 12,
 
-                    scales: {
+                    displayColors: false,
 
-                        x: {
+                    callbacks: {
 
-                            grid: {
-                                display: false
-                            }
+                        title: function(items) {
+
+                            return "📊 " + items[0].label;
 
                         },
 
-                        y: {
+                        label: function(context) {
 
-                            grid: {
-                                color: "#edf1f4"
-                            }
+                            return (
+                                "AI Risk Score: " +
+                                context.parsed.y.toFixed(1) +
+                                " / 100"
+                            );
 
                         }
 
@@ -1612,11 +1657,73 @@ function initRiskChart() {
 
                 }
 
+            },
+
+            scales: {
+
+                x: {
+
+                    grid: {
+                        display: false
+                    },
+
+                    border: {
+                        display: false
+                    },
+
+                    ticks: {
+
+                        color: "#71869a",
+
+                        font: {
+                            size: 11,
+                            weight: "600"
+                        },
+
+                        padding: 10
+
+                    }
+
+                },
+
+                y: {
+
+                    min: 40,
+
+                    max: 55,
+
+                    border: {
+                        display: false
+                    },
+
+                    grid: {
+
+                        color:
+                            "rgba(23,105,170,0.08)"
+
+                    },
+
+                    ticks: {
+
+                        color: "#71869a",
+
+                        font: {
+                            size: 10
+                        },
+
+                        stepSize: 2
+
+                    }
+
+                }
+
             }
-        );
+
+        }
+
+    });
 
 }
-
 
 // =========================================================
 // UPDATE RISK CHART
