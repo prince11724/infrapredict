@@ -218,9 +218,9 @@ async function handleLogin(event) {
     try {
 
         const response =
-            await fetch(
-                `${API_BASE_URL}/login`,
-                {
+    await fetch(
+        `${API_BASE_URL}/api/login`,
+        {
 
                     method: "POST",
 
@@ -709,43 +709,34 @@ async function loadPortalProjects(role) {
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/role`,
-            );
+        const response = await fetch(
+            `${API_BASE_URL}/api/projects/${encodeURIComponent(role)}`
+        );
 
+        const data = await response.json();
 
-        const data =
-            await response.json();
-
-
-        if (!data.success) {
+        if (!response.ok || !data.success) {
 
             showToast(
-                "Unable to load project data."
+                data.message || "Unable to load project data."
             );
 
             return;
         }
 
-
-        projects =
-            data.projects;
-
+        projects = data.projects;
 
         renderProjects();
 
         renderPriorityProjects();
 
-
         updateRoleKPIs();
-
 
     }
 
     catch (error) {
 
-        console.error(error);
+        console.error("PROJECT ERROR:", error);
 
         showToast(
             "Could not connect to project data."
