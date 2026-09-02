@@ -6324,105 +6324,125 @@ select:focus-visible {
 
     }
 
-}
 /* =========================================
-   FLOATING LANDING PAGE STATS
+   TILTED FLOATING AI STATS
    ========================================= */
 
-.landing-screen {
-    position: relative;
-    overflow: hidden;
-}
-
-/* Floating cards */
 .floating-stat {
     position: absolute;
-    z-index: 5;
+    z-index: 10;
 
-    min-width: 165px;
-    padding: 16px 20px;
+    width: 185px;
+    padding: 18px 20px;
 
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 
-    border: 1px solid rgba(18, 79, 115, 0.12);
-    border-radius: 18px;
+    border: 1px solid rgba(20, 70, 100, 0.14);
+    border-radius: 20px;
 
     box-shadow:
-        0 18px 45px rgba(20, 70, 100, 0.12),
-        0 4px 12px rgba(20, 70, 100, 0.06);
+        0 20px 45px rgba(20, 70, 100, 0.14),
+        0 5px 15px rgba(20, 70, 100, 0.06);
 
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 5px;
 
-    animation: floatingStat 4s ease-in-out infinite;
+    transform-origin: center;
 }
 
-/* Big number */
-.floating-stat .stat-number {
-    font-size: 26px;
+/* 1,981 PROJECTS */
+
+.projects-stat {
+    left: 3%;
+    top: 25%;
+    transform: rotate(-7deg);
+    animation: floatProjects 5s ease-in-out infinite;
+}
+
+/* 46.2% AI */
+
+.ai-stat {
+    right: 3%;
+    top: 48%;
+    transform: rotate(7deg);
+    animation: floatAI 5s ease-in-out infinite;
+}
+
+/* NUMBER */
+
+.floating-stat strong {
+    font-size: 28px;
     font-weight: 800;
+    line-height: 1;
+
     color: #123f5c;
-    line-height: 1.1;
 }
 
-/* Small label */
-.floating-stat .stat-label {
+/* LABEL */
+
+.floating-stat span {
     font-size: 12px;
     font-weight: 600;
+    letter-spacing: 0.3px;
+
     color: #71869a;
-    white-space: nowrap;
 }
 
-/* Project card */
-.stat-projects {
-    top: 30%;
-    left: 4%;
-}
+/* FLOATING MOTION */
 
-/* AI card */
-.stat-ai {
-    top: 52%;
-    right: 4%;
-    animation-delay: 1.2s;
-}
+@keyframes floatProjects {
 
-/* Floating animation */
-@keyframes floatingStat {
     0%, 100% {
-        transform: translateY(0);
+        transform: translateY(0) rotate(-7deg);
     }
 
     50% {
-        transform: translateY(-12px);
+        transform: translateY(-12px) rotate(-4deg);
     }
+
 }
 
-/* Mobile */
+@keyframes floatAI {
+
+    0%, 100% {
+        transform: translateY(0) rotate(7deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotate(4deg);
+    }
+
+}
+
+
+/* MOBILE */
+
 @media (max-width: 768px) {
 
     .floating-stat {
-        min-width: 140px;
-        padding: 12px 15px;
+        width: 145px;
+        padding: 14px 16px;
     }
 
-    .floating-stat .stat-number {
-        font-size: 21px;
+    .floating-stat strong {
+        font-size: 22px;
     }
 
-    .floating-stat .stat-label {
+    .floating-stat span {
         font-size: 10px;
     }
 
-    .stat-projects {
+    .projects-stat {
+        left: 2%;
         top: 18%;
-        left: 3%;
     }
 
-    .stat-ai {
+    .ai-stat {
+        right: 2%;
         top: 38%;
-        right: 3%;
     }
+
 }
