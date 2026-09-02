@@ -1,4 +1,4 @@
-// =========================================================
+ // =========================================================
 // GLOBAL STATE
 // =========================================================
 
@@ -219,7 +219,7 @@ async function handleLogin(event) {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/api/login",
+                `${API_BASE_URL}/api/login`,
                 {
 
                     method: "POST",
@@ -711,7 +711,7 @@ async function loadPortalProjects(role) {
 
         const response =
             await fetch(
-                `http://127.0.0.1:5000/api/projects/${role}`
+                `${API_BASE_URL}/api/projects/${role}`,
             );
 
 
