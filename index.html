@@ -938,13 +938,18 @@ window.addEventListener('beforeunload', () => {
   const mobileNavigationStyle = document.createElement('style');
   mobileNavigationStyle.textContent = `
     .mobile-menu-toggle,.mobile-menu-overlay{display:none}
+    body:not(.app-signed-in) .mobile-menu-toggle{display:none!important}
     @media (max-width:760px){
       .mobile-menu-toggle{display:grid;place-items:center;position:fixed;left:14px;bottom:18px;z-index:80;width:52px;height:52px;border:0;border-radius:50%;background:#087db5;color:#fff;font-size:23px;box-shadow:0 10px 28px #07548866}
       .mobile-menu-overlay{position:fixed;inset:0;z-index:70;background:#002b4880}.mobile-menu-overlay.visible{display:block}
       .dashboard-screen .sidebar{position:fixed;inset:0 auto 0 0;z-index:75;display:flex;width:min(286px,84vw);min-height:100vh;padding:20px 15px;overflow-y:auto;transform:translateX(-105%);transition:transform .24s ease;box-shadow:12px 0 35px #002b484d}
       .dashboard-screen .sidebar.mobile-open{transform:translateX(0)}
       .dashboard-screen .sidebar-brand,.dashboard-screen .role-chip,.dashboard-screen .portal-title,.dashboard-screen .portal-access,.dashboard-screen .sidebar-bottom{display:block}
-      .dashboard-screen .portal-access{display:flex}.dashboard-screen .nav{flex-direction:column;overflow:visible;padding:0}.dashboard-screen .nav-item{width:100%;padding:13px}.dashboard-screen .nav-count{display:grid}
+      .dashboard-screen .portal-access{display:flex}
+      .dashboard-screen .sidebar .nav{display:flex!important;visibility:visible!important;opacity:1!important;flex-direction:column!important;overflow:visible!important;padding:0!important;margin:0!important;gap:5px!important}
+      .dashboard-screen .sidebar .nav-item{display:flex!important;visibility:visible!important;width:100%!important;padding:13px!important;color:#c1dbe9!important;text-align:left!important}
+      .dashboard-screen .sidebar .nav-item.active{color:#fff!important;background:#ffffff18!important}
+      .dashboard-screen .sidebar .nav-count{display:grid!important}
     }`;
   document.head.append(mobileNavigationStyle);
   const sidebar = document.querySelector('.sidebar');
@@ -956,9 +961,17 @@ window.addEventListener('beforeunload', () => {
   menuButton.onclick = () => { sidebar.classList.toggle('mobile-open'); menuOverlay.classList.toggle('visible'); };
   menuOverlay.onclick = closeMobileMenu;
   sidebar.querySelectorAll('.nav-item,.portal-card,.logout-btn').forEach(item => item.addEventListener('click', closeMobileMenu));
+  const originalHandleLogin = window.handleLogin;
+  window.handleLogin = event => {
+    originalHandleLogin(event);
+    if (!document.getElementById('dashboard').classList.contains('hidden')) document.body.classList.add('app-signed-in');
+  };
+  const originalShowLanding = window.showLanding;
+  window.showLanding = () => { closeMobileMenu(); document.body.classList.remove('app-signed-in'); originalShowLanding(); };
   const originalNavigate = window.navigate;
   window.navigate = (page, button, fromHistory = false) => {
     originalNavigate(page, button);
+    if (!document.getElementById('dashboard').classList.contains('hidden')) document.body.classList.add('app-signed-in');
     closeMobileMenu();
     if (!fromHistory && !document.getElementById('dashboard').classList.contains('hidden')) history.pushState({ page }, '', `#${page}`);
   };
