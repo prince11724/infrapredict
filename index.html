@@ -32,7 +32,7 @@ function openPortal(portal){if(!accounts[signedIn].access.includes(portal))retur
 function setNav(page){document.querySelectorAll('.nav-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page))}
 function navigate(page,button){setNav(page);document.getElementById('pageName').textContent=page==='risk'?'Risk & Alerts':page==='evidence'?'Field Evidence':page[0].toUpperCase()+page.slice(1);const titles={overview:['Infrastructure Overview','AI-powered monitoring of national infrastructure projects'],projects:['Project Portfolio','Search, filter and review project delivery data'],risk:['Risk & Alerts','AI-generated signals and intervention priorities'],analytics:['Predictive Analytics','Model outputs for cost, schedule and implementation risk'],milestones:['Milestone Monitoring','Track planned versus actual implementation progress'],reports:['Reports & Intelligence','Generate decision-support reports'],evidence:['Field Evidence','Submit daily construction progress with photographic evidence']};document.getElementById('dashboardTitle').textContent=titles[page][0];document.getElementById('dashboardSubtitle').textContent=titles[page][1];const renderers={overview:renderOverview,projects:renderProjects,risk:renderRisk,analytics:renderAnalytics,milestones:renderMilestones,reports:renderReports,evidence:renderEvidence};if(!renderers[page]){showToast('This page is not available yet.');return}renderers[page]();window.scrollTo({top:0,behavior:'smooth'})}function renderOverview(){const d=profiles[activePortal];document.getElementById('pageContent').innerHTML=`<section class="hero-card"><span class="eyebrow">AI PROJECT INTELLIGENCE</span><h2>${d.hero}</h2><p>${d.heroText}</p><span class="live-badge"><i></i> AI Monitoring Active</span></section><section class="kpi-grid">${d.kpis.map((x,i)=>`<button class="kpi-card" onclick="navigate('projects')"><span>${x[0]}</span><i class="kpi-symbol" style="color:${x[3]==='red'?'#ee5361':x[3]==='orange'?'#e68b19':x[3]==='green'?'#18a76f':'#087db5'}">${x[4]}</i><strong>${x[1]}</strong><small><b class="${x[2].includes('↓')?'down':''}">${x[2]}</b> ${i===0?'vs last month':i===1?'after interventions':i===2?'portfolio risk':'this quarter'}</small></button>`).join('')}</section><section class="content-grid"><div class="panel"><div class="panel-head"><div><h3>Project Risk Trend</h3><p>Average predicted risk score over the last 12 months</p></div><select class="chart-select" onchange="changeChart(this.value)"><option value="risk">Risk Score</option><option value="delay">Delay Probability</option><option value="cost">Cost Overrun Probability</option></select></div><div class="chart-area"><svg id="riskChart" class="chart-svg" viewBox="0 0 800 330" preserveAspectRatio="none"></svg><div id="chartTooltip" class="chart-tooltip"></div></div></div><div class="panel sector-panel"><div class="panel-head"><div><h3>Sector Distribution</h3><p>Current monitored portfolio</p></div></div><div class="donut"></div><div class="legend">${d.sector.map(x=>`<div class="legend-row"><span><i style="background:${x[2]}"></i>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div></section>`;chartMode='risk';drawChart()}
 function chartValues(){const base=profiles[activePortal].risk;if(chartMode==='delay')return base.map(v=>Math.max(14,Math.round(v*.63-3)));if(chartMode==='cost')return base.map(v=>Math.round(v*.73+4));return base}
-function changeChart(value){chartMode=value;drawChart();showToast(value==='risk'?'Showing AI risk score.':value==='delay'?'Showing delay probability.':'Showing cost overrun probability.')}
+function changeChart(value){chartMode=value;drawChart()}
 function drawChart(){const vals=chartValues(),svg=document.getElementById('riskChart');if(!svg)return;const W=800,H=330,L=38,R=15,T=18,B=38,baseline=H-B,min=Math.floor(Math.min(...vals)/5)*5,max=Math.ceil(Math.max(...vals)/5)*5||10,scaleY=v=>T+(max-v)*(H-T-B)/(max-min||1),scaleX=i=>L+i*(W-L-R)/(vals.length-1),points=vals.map((v,i)=>({x:scaleX(i),y:scaleY(v),value:v}));let grid='';for(let i=0;i<5;i++){const v=min+(max-min)*i/4,y=scaleY(v);grid+=`<line class="graph-grid" x1="${L}" x2="${W-R}" y1="${y}" y2="${y}"/><text class="graph-label" x="4" y="${y+4}">${v.toFixed(0)}</text>`}const curve=points.reduce((path,p,i,arr)=>{if(i===0)return `M ${p.x} ${p.y}`;const p0=arr[i-2]||arr[i-1],p1=arr[i-1],p2=p,p3=arr[i+1]||p2;const c1x=p1.x+(p2.x-p0.x)/6,c1y=p1.y+(p2.y-p0.y)/6,c2x=p2.x-(p3.x-p1.x)/6,c2y=p2.y-(p3.y-p1.y)/6;return `${path} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`},''),area=`${curve} L ${points.at(-1).x} ${baseline} L ${points[0].x} ${baseline} Z`,months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];svg.innerHTML=`<defs><linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1e70b2" stop-opacity=".28"/><stop offset="1" stop-color="#1e70b2" stop-opacity=".025"/></linearGradient></defs><rect width="800" height="330" fill="transparent" onclick="clearChartTip()"/>${grid}<path class="risk-fill" d="${area}"/><path class="risk-line" d="${curve}"/>${points.map((p,i)=>`<g onclick="chartTip(event,'${months[i]}',${p.value},true)" onmouseenter="chartTip(event,'${months[i]}',${p.value},false)" onmouseleave="hideTip()"><circle fill="transparent" cx="${p.x}" cy="${p.y}" r="17"/><circle class="risk-dot" cx="${p.x}" cy="${p.y}" r="7"/></g>`).join('')}${months.map((m,i)=>`<text class="graph-label" text-anchor="middle" x="${points[i].x}" y="${H-10}">${m}</text>`).join('')}`}
 function chartTip(e,month,value,pin){if(pin)e.stopPropagation();const tip=document.getElementById('chartTooltip'),area=tip.parentElement,rect=area.getBoundingClientRect(),label=chartMode==='risk'?'AI Risk Score':chartMode==='delay'?'Delay Probability':'Cost Overrun Probability',x=e.clientX-rect.left,y=e.clientY-rect.top;tip.innerHTML=`<b>📊 &nbsp;${month}</b>${label}: ${value}${chartMode==='risk'?' / 100':'%'}`;tip.dataset.pinned=pin?'true':'';tip.style.display='block';tip.style.left=Math.min(x+22,area.clientWidth-190)+'px';tip.style.top=Math.max(y-72,15)+'px'}function hideTip(){const t=document.getElementById('chartTooltip');if(t&&!t.dataset.pinned)t.style.display='none'}function clearChartTip(){const t=document.getElementById('chartTooltip');if(t){t.dataset.pinned='';t.style.display='none'}}
 function renderProjects(){const d=profiles[activePortal];document.getElementById('pageContent').innerHTML=`<section class="panel page-panel"><div class="toolbar"><div><h2>Project Portfolio</h2><p>Search and monitor projects available to your current portal.</p></div><button class="primary-small" onclick="showToast('Project creation form is ready for backend integration.')">+ Add project</button></div><div class="filters"><input id="projectSearch" oninput="filterProjects()" placeholder="🔎 Search project, agency or ID..."><select id="riskFilter" onchange="filterProjects()"><option value="all">All risk levels</option><option>High</option><option>Medium</option><option>Low</option></select></div><div class="table-wrap"><table class="data-table"><thead><tr><th>PROJECT ID</th><th>PROJECT NAME</th><th>MINISTRY / AGENCY</th><th>ORIGINAL COST</th><th>PROGRESS</th><th>RISK</th><th>ACTION</th></tr></thead><tbody id="projectsBody"></tbody></table></div></section>`;window.visibleProjects=d.projects;fillProjects(d.projects)}
@@ -893,7 +893,8 @@ window.addEventListener('beforeunload', () => {
       .portal-access { display:none; } .sidebar-bottom { display:none; }
       .nav { flex-direction:row; gap:5px; overflow-x:auto; padding-bottom:2px; }
       .nav-item { flex:0 0 auto; padding:10px 12px; font-size:12px; white-space:nowrap; }
-      .nav-item.active { box-shadow:inset 0 -3px #13c5df; } .nav-count { display:none; }
+      .nav-item.active { box-shadow:inset 0 -3px #13c5df; }
+      .nav-count { display:grid; width:19px; height:19px; min-width:19px; font-size:9px; }
       .dashboard-main { padding:20px 15px 32px; }
       .dashboard-header { align-items:flex-start; margin-bottom:18px; gap:12px; }
       .dashboard-header h1 { font-size:23px; } .dashboard-header p { font-size:11px; }
@@ -925,6 +926,49 @@ window.addEventListener('beforeunload', () => {
       .nav-item { padding:9px 10px; } .hero-card p { font-size:12px; }
     }`;
   document.head.append(mobileStyle);
+  const notificationButton = document.querySelector('.header-actions .icon-btn');
+  if (notificationButton) {
+    notificationButton.onclick = openNotifications;
+    notificationButton.setAttribute('aria-label', 'Open notifications: 7 unread');
+    notificationButton.insertAdjacentHTML('beforeend', '<span class="notification-number">7</span>');
+    const notificationStyle = document.createElement('style');
+    notificationStyle.textContent = '.notification-number{position:absolute;right:-7px;top:-7px;display:grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border:2px solid #f7fafc;border-radius:10px;background:#ee5361;color:#fff;font-size:9px;font-weight:800}';
+    document.head.append(notificationStyle);
+  }
+  const mobileNavigationStyle = document.createElement('style');
+  mobileNavigationStyle.textContent = `
+    .mobile-menu-toggle,.mobile-menu-overlay{display:none}
+    @media (max-width:760px){
+      .mobile-menu-toggle{display:grid;place-items:center;position:fixed;left:14px;bottom:18px;z-index:80;width:52px;height:52px;border:0;border-radius:50%;background:#087db5;color:#fff;font-size:23px;box-shadow:0 10px 28px #07548866}
+      .mobile-menu-overlay{position:fixed;inset:0;z-index:70;background:#002b4880}.mobile-menu-overlay.visible{display:block}
+      .dashboard-screen .sidebar{position:fixed;inset:0 auto 0 0;z-index:75;display:flex;width:min(286px,84vw);min-height:100vh;padding:20px 15px;overflow-y:auto;transform:translateX(-105%);transition:transform .24s ease;box-shadow:12px 0 35px #002b484d}
+      .dashboard-screen .sidebar.mobile-open{transform:translateX(0)}
+      .dashboard-screen .sidebar-brand,.dashboard-screen .role-chip,.dashboard-screen .portal-title,.dashboard-screen .portal-access,.dashboard-screen .sidebar-bottom{display:block}
+      .dashboard-screen .portal-access{display:flex}.dashboard-screen .nav{flex-direction:column;overflow:visible;padding:0}.dashboard-screen .nav-item{width:100%;padding:13px}.dashboard-screen .nav-count{display:grid}
+    }`;
+  document.head.append(mobileNavigationStyle);
+  const sidebar = document.querySelector('.sidebar');
+  const menuButton = document.createElement('button');
+  menuButton.className = 'mobile-menu-toggle'; menuButton.type = 'button'; menuButton.setAttribute('aria-label', 'Open navigation menu'); menuButton.textContent = '☰';
+  const menuOverlay = document.createElement('div'); menuOverlay.className = 'mobile-menu-overlay';
+  document.body.append(menuButton, menuOverlay);
+  const closeMobileMenu = () => { sidebar.classList.remove('mobile-open'); menuOverlay.classList.remove('visible'); };
+  menuButton.onclick = () => { sidebar.classList.toggle('mobile-open'); menuOverlay.classList.toggle('visible'); };
+  menuOverlay.onclick = closeMobileMenu;
+  sidebar.querySelectorAll('.nav-item,.portal-card,.logout-btn').forEach(item => item.addEventListener('click', closeMobileMenu));
+  const originalNavigate = window.navigate;
+  window.navigate = (page, button, fromHistory = false) => {
+    originalNavigate(page, button);
+    closeMobileMenu();
+    if (!fromHistory && !document.getElementById('dashboard').classList.contains('hidden')) history.pushState({ page }, '', `#${page}`);
+  };
+  window.addEventListener('popstate', event => {
+    if (!signedIn || document.getElementById('dashboard').classList.contains('hidden')) return;
+    const page = event.state?.page || 'overview';
+    const button = document.querySelector(`.nav-item[data-page="${page}"]`) || document.querySelector('.nav-item[data-page="overview"]');
+    window.navigate(page, button, true);
+    if (!event.state) history.replaceState({ page: 'overview' }, '', '#overview');
+  });
   document.body.insertAdjacentHTML('beforeend', `
     <section id="milestoneUpdateModal" class="milestone-modal hidden" role="dialog" aria-modal="true">
       <div class="milestone-modal-card"><div class="milestone-modal-head"><h2>Update milestone</h2><button class="milestone-modal-close" onclick="closeMilestoneModal()" aria-label="Close">×</button></div>
