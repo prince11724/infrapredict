@@ -860,7 +860,95 @@ window.addEventListener('beforeunload', () => {
     stopCamera();
 
 });
-</script>
-<script src="milestone-photo-upgrade.js"></script>
+</script></body></html>
+<script>
+/* Milestone upload and photo-view feature. */
+(() => {
+  const storeKey = 'infraPredictMilestones';
+  const initial = [
+    { name: 'Land acquisition', status: 'Completed', detail: '14 Jan 2026', photo: '' },
+    { name: 'Foundation work', status: 'Completed', detail: '28 Mar 2026', photo: '' },
+    { name: 'Structural construction', status: 'In progress', detail: 'AI predicts 72% on-time probability', photo: '' },
+    { name: 'Testing & commissioning', status: 'Planned', detail: 'Dec 2026', photo: '' },
+    { name: 'Final handover', status: 'Planned', detail: 'Feb 2027', photo: '' }
+  ];
+  let milestones;
+  try { milestones = JSON.parse(localStorage.getItem(storeKey)) || initial; } catch { milestones = initial; }
+  const save = () => { try { localStorage.setItem(storeKey, JSON.stringify(milestones)); } catch { showToast('Update saved for this session.'); } };
+  const statusClass = status => status === 'In progress' ? 'medium' : status === 'Completed' ? 'good' : 'low';
+  const escape = value => String(value).replace(/[&<>'"]/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' })[char]);
 
-</body></html>
+  const style = document.createElement('style');
+  style.textContent = `
+    .milestone-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px;background:#052f4d80}.milestone-modal.hidden{display:none!important}
+    .milestone-modal-card{width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px;background:#fff;box-shadow:0 25px 65px #002a474d}.milestone-modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e8f0f4}.milestone-modal-head h2{margin:0;color:#073b61;font-size:19px}.milestone-modal-close{border:0;background:none;color:#7189a1;font-size:26px}.milestone-form{padding:22px 24px}.milestone-form label{display:block;margin:14px 0 7px;color:#173a55;font-size:12px;font-weight:700}.milestone-form input,.milestone-form select{width:100%;height:44px;padding:0 12px;border:1px solid #dceaf2;border-radius:10px;background:#fff;color:#516e83;outline:none}.milestone-form input[type=file]{height:auto;padding:10px}.milestone-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:23px}.milestone-cancel{border:1px solid #dceaf2;border-radius:10px;padding:10px 14px;background:#fff;color:#526f83;font-size:12px;font-weight:700}.milestone-save{border:0;border-radius:10px;padding:10px 14px;background:linear-gradient(110deg,#064d7b,#087db5,#00a6c7);color:#fff;font-size:12px;font-weight:700}.milestone-photo{display:block;max-width:100%;max-height:62vh;margin:0 auto;border-radius:12px}.milestone-empty{padding:36px 20px;color:#7189a1;text-align:center;font-size:13px}.milestone-caption{margin:13px 0 0;color:#7189a1;text-align:center;font-size:12px}
+  `;
+  document.head.append(style);
+  const mobileStyle = document.createElement('style');
+  mobileStyle.textContent = `
+    @media (max-width: 760px) {
+      .dashboard-screen { display:block; min-height:100vh; }
+      .sidebar { min-height:auto; padding:12px 14px; position:sticky; top:0; z-index:50; }
+      .sidebar-brand { display:none; } .role-chip { display:none; } .portal-title { display:none; }
+      .portal-access { display:none; } .sidebar-bottom { display:none; }
+      .nav { flex-direction:row; gap:5px; overflow-x:auto; padding-bottom:2px; }
+      .nav-item { flex:0 0 auto; padding:10px 12px; font-size:12px; white-space:nowrap; }
+      .nav-item.active { box-shadow:inset 0 -3px #13c5df; } .nav-count { display:none; }
+      .dashboard-main { padding:20px 15px 32px; }
+      .dashboard-header { align-items:flex-start; margin-bottom:18px; gap:12px; }
+      .dashboard-header h1 { font-size:23px; } .dashboard-header p { font-size:11px; }
+      .header-actions { gap:8px; } .profile > div:last-child { display:none; }
+      .hero-card { min-height:auto; padding:23px 20px; border-radius:20px; } .hero-card h2 { font-size:24px; }
+      .kpi-grid, .content-grid, .info-grid, .report-grid { grid-template-columns:1fr; gap:13px; }
+      .kpi-card { min-height:145px; } .kpi-card strong { margin-top:24px; }
+      .page-panel { padding:17px; } .toolbar { flex-direction:column; gap:12px; margin-bottom:17px; }
+      .toolbar .primary-small { width:100%; } .filters { flex-direction:column; }
+      .table-wrap { overflow-x:auto; } .data-table { min-width:650px; }
+      .alert-item { gap:9px; padding:13px 10px; } .alert-item b { font-size:12px; }
+      .text-button { padding:7px 2px; white-space:nowrap; }
+      .milestone-modal { align-items:end; padding:0; } .milestone-modal-card { width:100%; max-height:90vh; border-radius:20px 20px 0 0; }
+      .milestone-modal-head, .milestone-form { padding-left:18px; padding-right:18px; }
+      .milestone-actions { flex-direction:column-reverse; } .milestone-actions button { width:100%; }
+      .toast { left:14px; right:14px; top:14px; min-width:0; }
+      .topbar { height:auto; padding:18px 20px; } .gov-badge { padding:8px 10px; }
+      .gov-badge b { font-size:13px; } .gov-badge small { display:none; }
+      .landing-main { width:min(100% - 30px, 540px); margin-top:28px; }
+      .hero-copy { margin-bottom:35px; } .hero-copy h1 { margin:28px 0 16px; font-size:42px; letter-spacing:-2.5px; }
+      .float-tag { display:none; } .role-grid { grid-template-columns:1fr; gap:13px; }
+      .role-card { min-height:104px; padding:18px; } .landing-stats { grid-template-columns:repeat(2,1fr); gap:16px; margin:30px auto 20px; }
+      .landing-stats div:not(:last-child):after { display:none; } .footer { flex-direction:column; gap:6px; padding:18px 20px; }
+      .login-screen { padding:0; } .login-shell { grid-template-columns:1fr; min-height:100vh; border:0; border-radius:0; }
+      .login-visual { display:none; } .login-panel { padding:42px 22px; } .login-heading h2 { font-size:32px; }
+    }
+    @media (max-width: 420px) {
+      .dashboard-header .breadcrumb { font-size:10px; } .nav-icon { display:none; }
+      .nav-item { padding:9px 10px; } .hero-card p { font-size:12px; }
+    }`;
+  document.head.append(mobileStyle);
+  document.body.insertAdjacentHTML('beforeend', `
+    <section id="milestoneUpdateModal" class="milestone-modal hidden" role="dialog" aria-modal="true">
+      <div class="milestone-modal-card"><div class="milestone-modal-head"><h2>Update milestone</h2><button class="milestone-modal-close" onclick="closeMilestoneModal()" aria-label="Close">×</button></div>
+      <form class="milestone-form" id="milestoneUpdateForm"><label for="milestoneChoice">Milestone</label><select id="milestoneChoice"></select><label for="milestoneStatus">Status</label><select id="milestoneStatus"><option>Completed</option><option>In progress</option><option>Planned</option></select><label for="milestoneDate">Completion / planned date</label><input id="milestoneDate" type="date"><label for="milestonePhotoInput">Upload progress photo</label><input id="milestonePhotoInput" type="file" accept="image/*"><div class="milestone-actions"><button type="button" class="milestone-cancel" onclick="closeMilestoneModal()">Cancel</button><button class="milestone-save">Save update</button></div></form></div>
+    </section>
+    <section id="milestonePhotoModal" class="milestone-modal hidden" role="dialog" aria-modal="true"><div class="milestone-modal-card"><div class="milestone-modal-head"><h2 id="milestonePhotoTitle">Milestone photo</h2><button class="milestone-modal-close" onclick="closeMilestonePhoto()" aria-label="Close">×</button></div><div id="milestonePhotoContent"></div><div class="milestone-actions" style="padding:0 24px 22px"><button class="milestone-save" onclick="closeMilestonePhoto()">Close</button></div></div></section>`);
+
+  window.openMilestoneUpdate = () => {
+    const select = document.getElementById('milestoneChoice');
+    select.innerHTML = milestones.map((m, i) => `<option value="${i}">${escape(m.name)}</option>`).join('');
+    const sync = () => { const m = milestones[Number(select.value)]; document.getElementById('milestoneStatus').value = m.status; document.getElementById('milestoneDate').value = /^\d{4}-\d{2}-\d{2}$/.test(m.isoDate || '') ? m.isoDate : ''; };
+    select.onchange = sync; sync(); document.getElementById('milestonePhotoInput').value = ''; document.getElementById('milestoneUpdateModal').classList.remove('hidden');
+  };
+  window.closeMilestoneModal = () => document.getElementById('milestoneUpdateModal').classList.add('hidden');
+  window.closeMilestonePhoto = () => document.getElementById('milestonePhotoModal').classList.add('hidden');
+  window.openMilestonePhoto = index => { const m = milestones[index], content = document.getElementById('milestonePhotoContent'); document.getElementById('milestonePhotoTitle').textContent = m.name; content.innerHTML = m.photo ? `<img class="milestone-photo" src="${m.photo}" alt="Uploaded progress for ${escape(m.name)}"><p class="milestone-caption">Uploaded progress photo</p>` : '<p class="milestone-empty">No photo has been uploaded for this milestone yet.<br>Use “Update milestone” to add one.</p>'; document.getElementById('milestonePhotoModal').classList.remove('hidden'); };
+  document.getElementById('milestoneUpdateForm').addEventListener('submit', event => {
+    event.preventDefault(); const index = Number(document.getElementById('milestoneChoice').value), milestone = milestones[index], file = document.getElementById('milestonePhotoInput').files[0], date = document.getElementById('milestoneDate').value;
+    const commit = photo => { milestone.status = document.getElementById('milestoneStatus').value; if (date) { milestone.isoDate = date; milestone.detail = new Date(`${date}T00:00:00`).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); } if (photo) milestone.photo = photo; save(); closeMilestoneModal(); renderMilestones(); showToast('Milestone updated successfully.'); };
+    if (!file) return commit(''); if (!file.type.startsWith('image/')) return showToast('Please choose an image file.'); const reader = new FileReader(); reader.onload = () => commit(reader.result); reader.readAsDataURL(file);
+  });
+  window.renderMilestones = () => {
+    document.getElementById('pageContent').innerHTML = `<section class="panel page-panel"><div class="toolbar"><div><h2>Milestone Monitoring</h2><p>Track planned versus actual implementation milestones.</p></div><button class="primary-small" onclick="openMilestoneUpdate()">+ Update milestone</button></div><div class="alert-list">${milestones.map((m, i) => `<div class="alert-item"><span class="status ${statusClass(m.status)}">${i + 1}</span><div><b>${escape(m.name)}</b><small>${escape(m.status)} · ${escape(m.detail)}</small></div><button class="text-button" style="margin-left:auto" onclick="openMilestonePhoto(${i})">View →</button></div>`).join('')}</div></section>`;
+  };
+})();
+
+</script>
